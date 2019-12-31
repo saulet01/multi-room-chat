@@ -1,0 +1,15 @@
+{
+  "name": "multi-chat",
+  "version": "1.0.0",
+  "description": "Multi-room Chat Server ",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Saulet Yskak",
+  "license": "ISC",
+  "dependencies": {
+    "express": "*",
+    "socket.io": "*"
+  }
+}

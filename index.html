@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Multi-Room Chat Server </title>
+    <script src="https://kit.fontawesome.com/4013cd92ae.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/application/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <!-- Navbar -->
+        <nav class="navbar navbar-light bg-light">
+            <a class="navbar-brand" href="#">
+                <img src="/application/img/speech-bubble.svg" width="35" height="35" class="d-inline-block align-top" alt="Icon">
+                <p class="d-inline ml-3">Multi-Room Chat Server</p>
+            </a>
+        </nav>
+    </nav>
+
+    <!-- Toast Notifications -->
+    <div class="position-absolute w-100 mt-1 mr-4 main-toast">
+        <div class="toast ml-auto" role="alert" data-delay="900" data-autohide="false">
+            <div class="toast-header">
+                <strong class="mr-auto toast-info"></strong>
+                <button type="button" class="close close btn-close-toast" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                User already exists!
+            </div>
+        </div>
+    </div>
+
+    <div class="jumbotron jumbotron-fluid shadow">
+        <div class="container">
+            <div class="row mt-3 login-section">
+                <!-- Login Section -->
+                <div class="col-lg-2"></div>
+                <div class="col-lg-8">
+                    <form id="userForm">
+                        <div class="card">
+                            <div class="card-body shadow">
+                                <div class="form-group">
+                                    <h4 class="text-center mb-3"><i class="fas fa-user fa-sm"></i> Enter Username:</h4>
+                                    <input type="text" class="form-control" placeholder="Enter username" id="usernameEnter">
+                                </div>
+                                <button class="btn btn-warning" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container user-provided-name">
+        <div class="row mt-3 ">
+            <!-- Notifications whenever users connect, disconnet and leave room -->
+            <div class="col-lg-3 notifications">
+                <h4 class="text-center"><i class="fas fa-bell fa-sm"></i> Notifications:</h4>
+            </div>
+            <!-- Public messages within room  -->
+            <div class="col-lg-6">
+                <h4 class="text-center"><i class="far fa-envelope fa-sm"></i> Messages:</h4>
+                <div class="card shadow-sm">
+                    <div class="card-body messages">
+                    </div>
+                    <div class="card-footer">
+                        <form id="messageSection">
+                            <div class="form-group" id="typingDiv">
+                                <label>Message:</label>
+                                <textarea class="form-control" id="sendMessagesText"></textarea>
+                                <button type="submit" class="btn btn-warning btn-sm mt-2">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Online users and their associated room section -->
+            <div class="col-lg-3">
+                <h4 class="text-center"><i class="fas fa-users fa-sm"></i> Online users:</h4>
+                <div class="list-group online-users">
+                </div>
+            </div>
+        </div>
+        <hr class="mt-5 mb-5">
+        <div class="row">
+            <!-- Create Room Section -->
+            <div class="col-lg-4">
+                <h4 class="text-center"><i class="fas fa-external-link-alt fa-sm"></i> Create Room:</h4>
+                <form id="createRoom">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Room Name:</label>
+                                <input type="text" class="form-control" id="roomName">
+                                <label class="mt-2">Password (Optional):</label>
+                                <input type="password" class="form-control" id="roomPassword" >
+                                <button type="submit" class="btn btn-warning mt-3 btn-sm">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!--  Join Room Section -->
+            <div class="col-lg-4">
+                <h4 class="text-center"><i class="fas fa-door-open fa-sm"></i> Join Room:</h4>
+                <form id="joinRoom">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Room Name:</label>
+                                <input type="text" class="form-control" id="joinRoomName">
+                                <label class="mt-2">Password:</label>
+                                <input type="password" class="form-control" id="joinRoomPassword" placeholder="Enter password if the room is private">
+                                <button type="submit" class="btn btn-warning mt-3 btn-sm">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Available Rooms  -->
+            <div class="col-lg-4">
+                <h4 class="text-center"><i class="fas fa-check-circle fa-sm"></i> Available Rooms:</h4>
+                <div class="list-group available-rooms">
+                </div>
+            </div>
+        </div>
+        <hr class="mt-5 mb-5"> 
+        <!--  Creative Portion: Grant Administrator Privilege to a user -->
+        <div class="modal fade" id="modalAdmin" tabindex="-1" role="dialog" aria-labelledby="adminTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="adminTitle"><i class="fas fa-key fa-sm"></i> Grant administrator privilege to a user</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="giveAdminPrivilige">
+                        <div class="modal-body">                                    
+                            <div class="form-group">
+                                <label>Username:</label>
+                                <input type="text" class="form-control assign-admin-privilege" placeholder="Enter Username">
+                                <small class="form-text text-muted">Admin and assigned username must be within the same room!</small>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-warning btn-sm">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Admin Panel Section (kick and ban users) -->
+            <div class="col-lg-4">
+                <h4 class="text-center"><i class="fas fa-user-cog fa-sm"></i> Admin Panel:</h4>
+                <div class="card admin-pan shadow-sm">
+                    <div class="card-body">
+                        <form class="mt-3" id="kickUserForm">
+                            <div class="form-group">
+                                <label>Kick User:</label>
+                                <input type="text" class="form-control kickUsername" placeholder="Enter Username">
+                                <button class="btn btn-warning btn-sm mt-3">Submit</button>
+                            </div>
+                        </form>
+                        <hr>
+                        <form id="banForm">
+                            <div class="form-group">
+                                <label>Ban User:</label>
+                                <input type="text" class="form-control banUsername" placeholder="Enter Username">
+                                <button class="btn btn-warning btn-sm mt-3">Submit</button>
+                            </div>
+                        </form>
+                        <button class="btn btn-info btn-sm grant-button-admin" data-toggle="modal" data-target="#modalAdmin">Grant administrator privilege to a user</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Users who have administer privilege in rooms -->
+            <div class="col-lg-3">
+                <h4 class="text-center"><i class="fas fa-crown"></i> Admins in Rooms:</h4>
+                <div class="list-group admins-in-rooms">
+                </div>
+            </div>
+            <!-- Private Messages Section -->
+            <div class="col-lg-5">
+                <h4 class="text-center"><i class="fas fa-lock fa-sm"></i> Private Messages:</h4>
+                <div class="card shadow-sm">
+                    <div class="card-body private-messages-area">
+                    </div>
+                    <div class="card-footer">
+                        <form id="sendPrivateMessage">
+                            <div class="form-group">
+                                <label>Username:</label>
+                                <input type="text" class="form-control" placeholder="Enter Username" id="privateMessageUsername">
+                                <label class="mt-2">Secret Message:</label>
+                                <textarea class="form-control" placeholder="Enter message" id="messagePrivate"></textarea>
+                                <button class="btn btn-warning btn-sm mt-3">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mb-5"></div>
+    
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/application/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+.jumbotron {
+    background-color: #f39f86;
+    background-image: linear-gradient(315deg, #f39f86 0%, #f9d976 74%);
+}
+
+.notifications p {
+    color: gray;
+    font-size: 12px;
+}
+
+.available-rooms li {
+    font-size: 14px;
+}
+
+.grant-button-admin {
+    width: 100%;
+}
+
+.user-provided-name {
+    display: none;
+}
+
+/* Animation Fade in Right */
+@keyframes fadeInRight {
+    0% {
+        opacity: 0;
+        transform: translateX(1000px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Animation  Show Up*/
+@keyframes showUp {
+    0% {
+        opacity: 0;
+        transform: scale(1, 1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(1.3, 1.3);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1, 1);
+    }
+}
+
+/* Trigger animation */
+.jumbtron-animation {
+    animation: showUp 2s ease-out forwards;
+}
+
+/* Trigger animation */
+.testing_toasts {
+    animation: fadeInRight 0.8s ease-out forwards;
+}
